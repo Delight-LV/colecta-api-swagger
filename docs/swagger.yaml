@@ -1,0 +1,335 @@
+openapi: 3.0.0
+info:
+  title: Colecta API
+  description: API for managing debtors, invoices, and contacts in the Colecta platform
+  version: 1.0.0
+  contact:
+    name: Colecta Development Team
+
+servers:
+  - url: https://proxy.delight.lv/https://dlh4273prh.execute-api.eu-north-1.amazonaws.com/test
+    description: Production API Gateway URL
+
+components:
+  schemas:
+    Contact:
+      type: object
+      required:
+        - debitorName
+      properties:
+        contactName:
+          type: string
+          description: Name of the contact person
+        contactEmail:
+          type: string
+          format: email
+          description: Email address of the contact person
+        contactPhone:
+          type: string
+          description: Phone number of the contact person
+        debitorName:
+          type: string
+          description: Name of the debtor company
+        regNr:
+          type: string
+          description: Registration number of the debtor company
+      oneOf:
+        - required: [contactEmail]
+        - required: [contactPhone]
+        - required: [regNr]
+        - required: [debitorName]
+
+    Debitor:
+      type: object
+      properties:
+        debitorName:
+          type: string
+          description: Name of the debtor company
+        regNr:
+          type: string
+          description: Registration number of the debtor company
+        contactName:
+          type: string
+          description: Name of the contact person
+        contactEmail:
+          type: string
+          format: email
+          description: Email address of the contact person
+        contactPhone:
+          type: string
+          description: Phone number of the contact person
+      oneOf:
+        - required: [regNr]
+        - required: [debitorName]
+
+    Invoice:
+      type: object
+      required:
+        - invoiceNumber
+        - dueDate
+        - dueAmount
+      properties:
+        invoiceNumber:
+          type: string
+          description: Unique identifier for the invoice
+        dueDate:
+          type: string
+          format: date
+          description: Due date of the invoice (YYYY-MM-DD)
+        dueAmount:
+          type: number
+          minimum: 0
+          description: Amount due for the invoice
+        issueDate:
+          type: string
+          format: date
+          description: Issue date of the invoice (YYYY-MM-DD)
+        category:
+          type: string
+          description: Category of the invoice
+        debitorName:
+          type: string
+          description: Name of the debtor company
+        regNr:
+          type: string
+          description: Registration number of the debtor company
+      oneOf:
+        - required: [regNr]
+        - required: [debitorName]
+
+    FileData:
+      type: object
+      required:
+        - name
+        - content
+        - type
+      properties:
+        name:
+          type: string
+          description: Original filename
+        content:
+          type: string
+          format: byte
+          description: Base64-encoded file content
+        type:
+          type: string
+          description: MIME type of the file
+
+    ColumnMapping:
+      type: object
+      description: Configuration for mapping file columns to database fields
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Detailed error information
+
+  securitySchemes:
+    collectaApiKey:
+      type: apiKey
+      in: header
+      name: collecta-api-key
+      description: API key for authentication
+    xApiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: AWS API Gateway key
+
+paths:
+  /import:
+    post:
+      summary: Upload contact information
+      description: Upload contact information for debtors
+      security:
+        - collectaApiKey: []
+        - xApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contacts
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Contact'
+      responses:
+        '200':
+          description: Successfully submitted import job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /upload/debitors:
+    post:
+      summary: Upload debtor information
+      description: Upload debtor information
+      security:
+        - collectaApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - debitors
+              properties:
+                debitors:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Debitor'
+      responses:
+        '200':
+          description: Successfully submitted import job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /upload/invoices:
+    post:
+      summary: Upload invoice information
+      description: Upload invoice information
+      security:
+        - collectaApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoices
+              properties:
+                invoices:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Invoice'
+      responses:
+        '200':
+          description: Successfully submitted import job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /upload/file:
+    post:
+      summary: Upload a file for processing
+      description: Upload a file (CSV, Excel, etc.) for processing
+      security:
+        - collectaApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fileData
+                - columnMapping
+              properties:
+                fileData:
+                  $ref: '#/components/schemas/FileData'
+                columnMapping:
+                  $ref: '#/components/schemas/ColumnMapping'
+                userId:
+                  type: string
+                  description: User ID of the person uploading the data
+                userName:
+                  type: string
+                  description: Name of the user uploading the data
+                userEmail:
+                  type: string
+                  format: email
+                  description: Email of the user uploading the data
+      responses:
+        '200':
+          description: Successfully submitted import job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                    format: uuid
+                  message:
+                    type: string
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error' 
