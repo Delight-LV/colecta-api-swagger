@@ -1,0 +1,14 @@
+{
+  "name": "colecta-swagger",
+  "version": "1.0.0",
+  "description": "Swagger UI server for Colecta API",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "js-yaml": "^4.1.0"
+  }
+}
