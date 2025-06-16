@@ -140,8 +140,68 @@ components:
       in: header
       name: x-api-key
       description: AWS API Gateway key
+    origin:
+      type: apiKey
+      in: header
+      name: Origin
+      description: Origin header for CORS
 
 paths:
+  /status:
+    get:
+      summary: Get job status
+      description: Check the status of a previously submitted import job
+      security:
+        - collectaApiKey: []
+        - xApiKey: []
+        - origin: []
+      parameters:
+        - name: jobId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the job to check
+      responses:
+        '200':
+          description: Job status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+                    description: Current status of the job
+                  message:
+                    type: string
+                    description: Additional status information
+                  progress:
+                    type: number
+                    minimum: 0
+                    maximum: 100
+                    description: Progress percentage of the job
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Job not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /import:
     post:
       summary: Upload contact information
@@ -149,6 +209,7 @@ paths:
       security:
         - collectaApiKey: []
         - xApiKey: []
+        - origin: []
       requestBody:
         required: true
         content:

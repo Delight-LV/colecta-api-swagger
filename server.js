@@ -11,18 +11,18 @@ const app = express();
 const port = 3000;
 
 // Serve static files
-app.use(express.static(__dirname));
+app.use(express.static(join(__dirname, 'docs')));
 
 // Serve the swagger.yaml file
 app.get('/swagger.yaml', (req, res) => {
-    const yamlContent = fs.readFileSync(join(__dirname, 'swagger.yaml'), 'utf8');
+    const yamlContent = fs.readFileSync(join(__dirname, 'docs', 'swagger.yaml'), 'utf8');
     res.setHeader('Content-Type', 'text/yaml');
     res.send(yamlContent);
 });
 
 // Serve the HTML file
 app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'swagger-ui.html'));
+    res.sendFile(join(__dirname, 'docs', 'index.html'));
 });
 
 app.listen(port, () => {
