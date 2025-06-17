@@ -106,37 +106,6 @@ Upload invoice information.
 }
 ```
 
-### 4. File Upload
-Upload a file for processing (CSV, Excel, etc.).
-
-**Endpoint:** `POST /upload/file`
-
-**Request Body:**
-```json
-{
-  "clientId": "string",
-  "fileData": {
-    "name": "string",
-    "content": "base64-encoded-string",
-    "type": "string"
-  },
-  "columnMapping": {
-    // Column mapping configuration
-  },
-  "userId": "string",              // Optional
-  "userName": "string",            // Optional
-  "userEmail": "string"            // Optional
-}
-```
-
-**Response:**
-```json
-{
-  "jobId": "uuid",
-  "message": "Import job submitted successfully"
-}
-```
-
 ## Error Responses
 
 ### 400 Bad Request
