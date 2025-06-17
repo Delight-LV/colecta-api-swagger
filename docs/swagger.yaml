@@ -7,7 +7,7 @@ info:
     name: Colecta Development Team
 
 servers:
-  - url: https://proxy.delight.lv/https://dlh4273prh.execute-api.eu-north-1.amazonaws.com/test
+  - url: https://api.colecta.lv/v1
     description: Production API Gateway URL
 
 components:
