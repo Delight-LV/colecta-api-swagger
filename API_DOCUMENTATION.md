@@ -1,7 +1,7 @@
 # Colecta API Documentation
 
 ## Base URL
-`https://{api-gateway-url}/api/v1`
+`https://api.colecta.lv/api/v1`
 
 ## Authentication
 All API requests require a valid `clientId` in the request body.
