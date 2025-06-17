@@ -1,7 +1,7 @@
 # Colecta API Documentation
 
 ## Base URL
-`https://{api-gateway-url}/api/v1`
+`https://api.colecta.lv/api/v1`
 
 ## Authentication
 All API requests require a valid `clientId` in the request body.
@@ -92,37 +92,6 @@ Upload invoice information.
       "regNr": "string"           // Required if debitorName not provided
     }
   ],
-  "userId": "string",              // Optional
-  "userName": "string",            // Optional
-  "userEmail": "string"            // Optional
-}
-```
-
-**Response:**
-```json
-{
-  "jobId": "uuid",
-  "message": "Import job submitted successfully"
-}
-```
-
-### 4. File Upload
-Upload a file for processing (CSV, Excel, etc.).
-
-**Endpoint:** `POST /upload/file`
-
-**Request Body:**
-```json
-{
-  "clientId": "string",
-  "fileData": {
-    "name": "string",
-    "content": "base64-encoded-string",
-    "type": "string"
-  },
-  "columnMapping": {
-    // Column mapping configuration
-  },
   "userId": "string",              // Optional
   "userName": "string",            // Optional
   "userEmail": "string"            // Optional

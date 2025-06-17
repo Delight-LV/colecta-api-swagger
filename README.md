@@ -1,1 +1,1 @@
-# delight-api-swagger
+# colecta-api-swagger
