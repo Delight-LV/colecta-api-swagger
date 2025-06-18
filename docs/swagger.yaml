@@ -131,13 +131,8 @@ components:
     colectaApiKey:
       type: apiKey
       in: header
-      name: colecta-api-key
-      description: API key for authentication
-    xApiKey:
-      type: apiKey
-      in: header
       name: x-api-key
-      description: AWS API Gateway key
+      description: API key for authentication
 
 paths:
   /status:
@@ -196,7 +191,7 @@ paths:
       tags:
         - Colecta v1 API
 
-  /uploads/contacts:
+  /upload/contacts:
     post:
       summary: Upload contact information
       description: Upload contact information for debtors
