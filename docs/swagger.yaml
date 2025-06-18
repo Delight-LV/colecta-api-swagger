@@ -97,6 +97,18 @@ components:
         regNr:
           type: string
           description: Registration number of the debtor company
+        extra1:
+          type: string
+          description: Additional field 1 for invoice data
+        extra2:
+          type: string
+          description: Additional field 2 for invoice data
+        extra3:
+          type: string
+          description: Additional field 3 for invoice data
+        extra4:
+          type: string
+          description: Additional field 4 for invoice data
       oneOf:
         - required: [regNr]
         - required: [debitorName]
