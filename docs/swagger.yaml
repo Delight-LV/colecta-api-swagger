@@ -7,8 +7,8 @@ info:
     name: Colecta Development Team
 
 servers:
-  - url: https://api.colecta.lv/v1
-    description: Production API Gateway URL
+  - url: https://n85wynjy07.execute-api.eu-north-1.amazonaws.com/Test
+    description: AWS API Gateway URL
 
 tags:
   - name: Colecta v1 API
@@ -101,24 +101,6 @@ components:
         - required: [regNr]
         - required: [debitorName]
 
-    FileData:
-      type: object
-      required:
-        - name
-        - content
-        - type
-      properties:
-        name:
-          type: string
-          description: Original filename
-        content:
-          type: string
-          format: byte
-          description: Base64-encoded file content
-        type:
-          type: string
-          description: MIME type of the file
-
     ColumnMapping:
       type: object
       description: Configuration for mapping file columns to database fields
@@ -134,21 +116,16 @@ components:
           description: Detailed error information
 
   securitySchemes:
-    collectaApiKey:
+    colectaApiKey:
       type: apiKey
       in: header
-      name: collecta-api-key
+      name: colecta-api-key
       description: API key for authentication
     xApiKey:
       type: apiKey
       in: header
       name: x-api-key
       description: AWS API Gateway key
-    origin:
-      type: apiKey
-      in: header
-      name: Origin
-      description: Origin header for CORS
 
 paths:
   /status:
@@ -156,9 +133,8 @@ paths:
       summary: Get job status
       description: Check the status of a previously submitted import job
       security:
-        - collectaApiKey: []
+        - colectaApiKey: []
         - xApiKey: []
-        - origin: []
       parameters:
         - name: jobId
           in: query
@@ -208,14 +184,13 @@ paths:
       tags:
         - Colecta v1 API
 
-  /import:
+  /uploads/contacts:
     post:
       summary: Upload contact information
       description: Upload contact information for debtors
       security:
-        - collectaApiKey: []
+        - colectaApiKey: []
         - xApiKey: []
-        - origin: []
       requestBody:
         required: true
         content:
@@ -262,7 +237,7 @@ paths:
       summary: Upload debtor information
       description: Upload debtor information
       security:
-        - collectaApiKey: []
+        - colectaApiKey: []
       requestBody:
         required: true
         content:
@@ -309,7 +284,7 @@ paths:
       summary: Upload invoice information
       description: Upload invoice information
       security:
-        - collectaApiKey: []
+        - colectaApiKey: []
       requestBody:
         required: true
         content:
