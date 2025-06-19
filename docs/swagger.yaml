@@ -7,7 +7,7 @@ info:
     name: Colecta Development Team
 
 servers:
-  - url: https://n85wynjy07.execute-api.eu-north-1.amazonaws.com/Test/v1/
+  - url: https://api.colecta.lv/v1/
     description: AWS API Gateway URL
 
 tags:
